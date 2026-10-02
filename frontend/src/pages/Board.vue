@@ -22,16 +22,17 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
-const assigns = ref([])
+// 只渲染投影接口（/weeks/:id/board）回包的卡片；归属由后端投影钉死，本页不重算。
+const cards = ref([])
 const days = [0,1,2,3,4,5,6]
 const err = ref('')
 const weekId = 1
-function byDay(d) { return assigns.value.filter(a => a.day === d) }
+function byDay(d) { return cards.value.filter(a => a.day === d) }
 async function load() {
   err.value = ''
   try {
     const b = await api('/weeks/' + weekId + '/board')
-    assigns.value = b.assignments || []
+    cards.value = b.cards || []
   } catch (e) { err.value = e.message }
 }
 async function generate() {

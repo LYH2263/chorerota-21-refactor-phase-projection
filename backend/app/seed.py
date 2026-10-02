@@ -8,6 +8,7 @@ def init_db():
     CREATE TABLE IF NOT EXISTS weeks(id INTEGER PRIMARY KEY, label TEXT, status TEXT);
     CREATE TABLE IF NOT EXISTS assignments(id INTEGER PRIMARY KEY AUTOINCREMENT, week_id INT, day INT, task_id INT, member_id INT);
     CREATE TABLE IF NOT EXISTS swap_requests(id INTEGER PRIMARY KEY AUTOINCREMENT, week_id INT, a_day INT, a_task INT, b_day INT, b_task INT, status TEXT, note TEXT);
+    CREATE TABLE IF NOT EXISTS rota_cursor(id INTEGER PRIMARY KEY CHECK(id=1), phase INTEGER NOT NULL DEFAULT 0);
     CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT);
     """)
     if c.execute("SELECT COUNT(*) c FROM members").fetchone()["c"] == 0:
