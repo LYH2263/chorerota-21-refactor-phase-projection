@@ -8,13 +8,13 @@
     </div>
     <p v-if="err" class="err">{{ err }}</p>
     <div class="week-grid">
-      <article v-for="d in days" :key="d" class="week-card">
-        <header>Day {{ d }}</header>
-        <div v-for="a in byDay(d)" :key="a.id">
-          <span class="chip">{{ a.task_title }}</span>
-          <span class="chip coral">{{ a.member_name }}</span>
+      <article v-for="d in days" :key="d.day" class="week-card">
+        <header>Day {{ d.day }}</header>
+        <div v-for="c in d.cards" :key="c.id">
+          <span class="chip">{{ c.task_title }}</span>
+          <span class="chip coral">{{ c.member_name }}</span>
         </div>
-        <p v-if="!byDay(d).length" class="muted">空</p>
+        <p v-if="!d.cards.length" class="muted">空</p>
       </article>
     </div>
   </div>
@@ -22,16 +22,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
-const assigns = ref([])
-const days = [0,1,2,3,4,5,6]
+// 只渲染投影接口的回包（days/cards 已按天分桶），不在本地重算归属
+const days = ref([])
 const err = ref('')
 const weekId = 1
-function byDay(d) { return assigns.value.filter(a => a.day === d) }
 async function load() {
   err.value = ''
   try {
     const b = await api('/weeks/' + weekId + '/board')
-    assigns.value = b.assignments || []
+    days.value = b.days || []
   } catch (e) { err.value = e.message }
 }
 async function generate() {

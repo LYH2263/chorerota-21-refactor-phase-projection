@@ -1,16 +1,17 @@
 """Round-robin weekly chore assignments + swap legality."""
 
+from app.services.phase_cursor import PhaseCursor
+
+
 def build_week_slots(member_ids: list[int], task_ids: list[int], days: int = 7) -> list[dict]:
     """Assign each (day, task) to members in round-robin by task then day."""
     if not member_ids or not task_ids:
         return []
+    cursor = PhaseCursor(len(member_ids))
     slots = []
-    idx = 0
     for day in range(days):
         for tid in task_ids:
-            mid = member_ids[idx % len(member_ids)]
-            slots.append({"day": day, "task_id": tid, "member_id": mid})
-            idx += 1
+            slots.append({"day": day, "task_id": tid, "member_id": member_ids[cursor.advance()]})
     return slots
 
 
